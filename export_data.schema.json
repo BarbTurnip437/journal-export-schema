@@ -33,7 +33,7 @@
     }
   },
   "$defs": {
-    "version": { "type": "string", "const": "0.1.0-indev" },
+    "version": { "type": "string", "const": "0.1.0" },
     "experienceSerializable": {
       "type": "object",
       "properties": {
