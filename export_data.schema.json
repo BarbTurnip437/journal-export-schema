@@ -2,9 +2,195 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "",
   "title": "Journal Export Protocol",
-  "description": "Schema for the app's journal import/export JSON, derived from the JournalExport model used by the Android app.",
+  "type": "object",
+  "properties": {
+    "implementation": {
+      "description": "This key is extra added to store the meta implementation data",
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "description": "A semantic version that indicates the protocol version that the implementation used",
+          "$ref": "#/$defs/version"
+        }
+      }
+    },
+    "experiences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/experienceSerializable" }
+    },
+    "substanceCompanions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/substanceCompanion" }
+    },
+    "customSubstances": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/customSubstance" }
+    },
+    "customUnits": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/customUnitSerializable" }
+    }
+  },
   "$defs": {
     "version": { "type": "string", "const": "0.1.0-indev" },
+    "experienceSerializable": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "creationDate": { "$ref": "#/$defs/unixTimestamp" },
+        "sortDate": { "$ref": "#/$defs/unixTimestamp" },
+        "isFavorite": { "type": "boolean" },
+        "ingestions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ingestionSerializable" }
+        },
+        "location": {
+          "anyOf": [
+            { "$ref": "#/$defs/locationSerializable" },
+            { "type": "null" }
+          ]
+        },
+        "ratings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ratingSerializable" }
+        },
+        "timedNotes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/timedNoteSerializable" }
+        }
+      },
+      "required": ["title", "text", "sortDate", "location", "isFavorite"]
+    },
+    "customUnitSerializable": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "substanceName": { "type": "string" },
+        "name": { "type": "string" },
+        "creationDate": { "$ref": "#/$defs/unixTimestamp" },
+        "administrationRoute": { "$ref": "#/$defs/administrationRoute" },
+        "dose": { "type": ["number", "null"] },
+        "estimatedDoseStandardDeviation": { "type": ["number", "null"] },
+        "isEstimate": { "type": "boolean" },
+        "isArchived": { "type": "boolean" },
+        "unit": { "type": "string" },
+        "unitPlural": { "type": ["string", "null"] },
+        "originalUnit": { "type": "string" },
+        "note": { "type": "string" }
+      },
+      "required": [
+        "substanceName",
+        "name",
+        "administrationRoute",
+        "isEstimate",
+        "isArchived",
+        "unit",
+        "originalUnit",
+        "note"
+      ]
+    },
+    "ratingSerializable": {
+      "type": "object",
+      "properties": {
+        "option": { "$ref": "#/$defs/shulginRatingOption" },
+        "time": { "$ref": "#/$defs/optionalUnixTimestamp" },
+        "creationDate": { "$ref": "#/$defs/optionalUnixTimestamp" }
+      },
+      "required": ["option"]
+    },
+    "ingestionSerializable": {
+      "type": "object",
+      "properties": {
+        "substanceName": { "type": "string" },
+        "time": { "$ref": "#/$defs/unixTimestamp" },
+        "endTime": { "$ref": "#/$defs/optionalUnixTimestamp" },
+        "creationDate": {
+          "type": ["integer", "null"],
+          "$ref": "#/$defs/unixTimestamp"
+        },
+        "administrationRoute": { "$ref": "#/$defs/administrationRoute" },
+        "dose": { "type": ["number", "null"] },
+        "isDoseAnEstimate": { "type": "boolean" },
+        "estimatedDoseStandardDeviation": { "type": ["number", "null"] },
+        "units": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] },
+        "stomachFullness": {
+          "anyOf": [{ "$ref": "#/$defs/stomachFullness" }, { "type": "null" }]
+        },
+        "consumerName": { "type": ["string", "null"] },
+        "customUnitId": { "$ref": "#/$defs/optionalUnixTimestamp" }
+      },
+      "required": [
+        "substanceName",
+        "time",
+        "administrationRoute",
+        "isDoseAnEstimate"
+      ]
+    },
+    "locationSerializable": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "latitude": { "type": ["number", "null"] },
+        "longitude": { "type": ["number", "null"] }
+      },
+      "required": ["name"]
+    },
+    "timedNoteSerializable": {
+      "type": "object",
+      "properties": {
+        "creationDate": { "$ref": "#/$defs/unixTimestamp" },
+        "time": { "$ref": "#/$defs/unixTimestamp" },
+        "note": { "type": "string" },
+        "color": { "$ref": "#/$defs/adaptiveColor" },
+        "isPartOfTimeline": { "type": "boolean" }
+      },
+      "required": ["creationDate", "time", "note", "color", "isPartOfTimeline"]
+    },
+    "substanceCompanion": {
+      "type": "object",
+      "properties": {
+        "substanceName": { "type": "string" },
+        "color": { "$ref": "#/$defs/adaptiveColor" }
+      },
+      "required": ["substanceName", "color"]
+    },
+    "customSubstance": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "units": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["name", "units", "description"]
+    },
+    "administrationRoute": {
+      "type": "string",
+      "enum": [
+        "ORAL",
+        "SUBLINGUAL",
+        "BUCCAL",
+        "INSUFFLATED",
+        "RECTAL",
+        "TRANSDERMAL",
+        "SUBCUTANEOUS",
+        "INTRAMUSCULAR",
+        "INTRAVENOUS",
+        "SMOKED",
+        "INHALED"
+      ]
+    },
+    "stomachFullness": {
+      "type": "string",
+      "enum": ["EMPTY", "QUARTERFULL", "HALFFULL", "FULL", "VERYFULL"]
+    },
+    "shulginRatingOption": {
+      "type": "string",
+      "enum": ["minus", "plusMinus", "plus", "twoPlus", "threePlus", "fourPlus"]
+    },
     "adaptiveColor": {
       "type": "string",
       "enum": [
@@ -61,223 +247,13 @@
         "MAROON"
       ]
     },
-    "experience": {
-      "type": "object",
-      "required": [
-        "title",
-        "text",
-        "creationDate",
-        "sortDate",
-        "isFavorite",
-        "ingestions",
-        "location",
-        "ratings",
-        "timedNotes"
-      ],
-      "properties": {
-        "title": { "type": "string" },
-        "text": { "type": "string" },
-        "creationDate": {
-          "type": "string",
-          "format": "date-time",
-          "description": "ISO-8601 instant."
-        },
-        "sortDate": {
-          "type": "string",
-          "format": "date-time",
-          "description": "ISO-8601 instant."
-        },
-        "isFavorite": { "type": "boolean", "default": false },
-        "ingestions": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/ingestion" }
-        },
-        "location": {
-          "oneOf": [{ "$ref": "#/$defs/location" }, { "type": "null" }]
-        },
-        "ratings": { "type": "array", "items": { "$ref": "#/$defs/rating" } },
-        "timedNotes": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/timedNote" }
-        }
-      }
+    "unixTimestamp": {
+      "type": "integer",
+      "description": "Unix timestamp in milliseconds since epoch"
     },
-    "ingestion": {
-      "type": "object",
-      "required": [
-        "substanceName",
-        "time",
-        "endTime",
-        "creationDate",
-        "administrationRoute",
-        "dose",
-        "isDoseAnEstimate",
-        "estimatedDoseStandardDeviation",
-        "units",
-        "notes",
-        "stomachFullness",
-        "consumerName",
-        "customUnitId"
-      ],
-      "properties": {
-        "substanceName": { "type": "string" },
-        "time": { "type": "string", "format": "date-time" },
-        "endTime": {
-          "oneOf": [
-            { "type": "string", "format": "date-time" },
-            { "type": "null" }
-          ]
-        },
-        "creationDate": { "type": "string", "format": "date-time" },
-        "administrationRoute": {
-          "type": "string",
-          "description": "Administration route enum value, e.g. ORAL, SUBLINGUAL, BUCCAL, INSUFFLATED, etc."
-        },
-        "dose": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
-        "isDoseAnEstimate": { "type": "boolean" },
-        "estimatedDoseStandardDeviation": {
-          "oneOf": [{ "type": "number" }, { "type": "null" }]
-        },
-        "units": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
-        "notes": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
-        "stomachFullness": {
-          "oneOf": [{ "type": "string" }, { "type": "null" }],
-          "description": "App enum value for stomach fullness."
-        },
-        "consumerName": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
-        "customUnitId": { "oneOf": [{ "type": "integer" }, { "type": "null" }] }
-      }
-    },
-    "location": {
-      "type": "object",
-      "required": ["name"],
-      "properties": {
-        "name": { "type": "string" },
-        "latitude": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
-        "longitude": { "oneOf": [{ "type": "number" }, { "type": "null" }] }
-      }
-    },
-    "rating": {
-      "type": "object",
-      "required": ["option", "time", "creationDate"],
-      "properties": {
-        "option": {
-          "type": "string",
-          "description": "Shulgin rating enum value serialized as a string."
-        },
-        "time": {
-          "oneOf": [
-            { "type": "string", "format": "date-time" },
-            { "type": "null" }
-          ]
-        },
-        "creationDate": {
-          "oneOf": [
-            { "type": "string", "format": "date-time" },
-            { "type": "null" }
-          ]
-        }
-      }
-    },
-    "timedNote": {
-      "type": "object",
-      "required": ["creationDate", "time", "note", "color", "isPartOfTimeline"],
-      "properties": {
-        "creationDate": { "type": "string", "format": "date-time" },
-        "time": { "type": "string", "format": "date-time" },
-        "note": { "type": "string" },
-        "color": { "$ref": "#/$defs/adaptiveColor" },
-        "isPartOfTimeline": { "type": "boolean" }
-      }
-    },
-    "customUnit": {
-      "type": "object",
-      "required": [
-        "id",
-        "substanceName",
-        "name",
-        "creationDate",
-        "administrationRoute",
-        "dose",
-        "estimatedDoseStandardDeviation",
-        "isEstimate",
-        "isArchived",
-        "unit",
-        "unitPlural",
-        "originalUnit",
-        "note"
-      ],
-      "properties": {
-        "id": { "type": "integer" },
-        "substanceName": { "type": "string" },
-        "name": { "type": "string" },
-        "creationDate": { "type": "string", "format": "date-time" },
-        "administrationRoute": {
-          "type": "string",
-          "description": "Administration route enum value."
-        },
-        "dose": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
-        "estimatedDoseStandardDeviation": {
-          "oneOf": [{ "type": "number" }, { "type": "null" }]
-        },
-        "isEstimate": { "type": "boolean" },
-        "isArchived": { "type": "boolean" },
-        "unit": { "type": "string" },
-        "unitPlural": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
-        "originalUnit": { "type": "string" },
-        "note": { "type": "string" }
-      }
-    }
-  },
-  "type": "object",
-  "required": [
-    "experiences",
-    "substanceCompanions",
-    "customSubstances",
-    "customUnits"
-  ],
-  "properties": {
-    "implementation": {
-      "description": "This key is extra added to store the meta implementation data",
-      "type": "object",
-      "required": ["version"],
-      "properties": {
-        "version": {
-          "description": "A semantic version that indicates the protocol version that the implementation used",
-          "$ref": "#/$defs/version"
-        }
-      }
-    },
-    "substanceCompanions": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["substanceName"],
-        "properties": {
-          "color": { "$ref": "#/$defs/adaptiveColor" },
-          "substanceName": { "type": "string" }
-        }
-      }
-    },
-    "customSubstances": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "units"],
-        "properties": {
-          "name": { "type": "string" },
-          "units": {
-            "description": "'μg', 'mg', 'g' and 'mL' is preferred but can be any",
-            "type": "string"
-          },
-          "description": { "type": "string" }
-        }
-      }
-    },
-    "experiences": { "type": "array", "items": {} },
-    "customUnits": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/customUnit" }
+    "optionalUnixTimestamp": {
+      "type": ["integer", "null"],
+      "description": "Optional unix timestamp in milliseconds since epoch"
     }
   }
 }
