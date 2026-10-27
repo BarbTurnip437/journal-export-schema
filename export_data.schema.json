@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "",
+  "$id": "https://raw.githubusercontent.com/BarbTurnip437/journal-export-schema/refs/heads/main/export_data.schema.json",
   "title": "Journal Export Protocol",
   "type": "object",
   "properties": {

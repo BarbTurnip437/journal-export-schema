@@ -1,9 +1,15 @@
 import json
 from pathlib import Path
 
-from jsonschema import validate
+from jsonschema import validate, ValidationError
 
-schema = json.loads(Path("export_data.schema.json").read_text())
-test_file = json.loads(Path("test_file.json").read_text())
+SCHEMA = json.loads(Path("export_data.schema.json").read_text())
 
-print(validate(test_file, schema))
+for test_file in Path("tests").glob("*.json"):
+    test_json = json.loads(test_file.read_text())
+
+    print(test_file, end=": ")
+    try:
+        print(validate(test_json, SCHEMA))
+    except ValidationError as e:
+        print(e.path, "->", e.message)

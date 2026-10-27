@@ -1,0 +1,69 @@
+{
+  "substanceCompanions": [
+    { "substanceName": "Diazepam", "color": "BLUE" },
+    { "substanceName": "Alcohol", "color": "FOREST_GREEN" },
+    { "substanceName": "Tianeptine", "color": "RED" },
+    { "substanceName": "Sertraline", "color": "PURPLE" },
+    { "substanceName": "Zolpidem", "color": "DEEP_LAVENDER" },
+    { "substanceName": "Fluoxetine", "color": "BLUE_VIOLET" },
+    { "substanceName": "Lorazepam", "color": "DODGER_BLUE" },
+    { "substanceName": "Dextromethorphan", "color": "DARK_MAGENTA" },
+    { "substanceName": "1,4-Butanediol", "color": "MOSS_GREEN" },
+    { "substanceName": "Codeine", "color": "CORAL" },
+    { "substanceName": "Quetiapine", "color": "DARK_TURQUOISE" },
+    { "substanceName": "Dihydrocodeine", "color": "TOMATO" },
+    { "substanceName": "Tramadol", "color": "ORANGE_RED" },
+    { "substanceName": "Baclofen", "color": "JUNGLE_GREEN" },
+    { "substanceName": "Gabapentin", "color": "LIME" },
+    { "substanceName": "Pregabalin", "color": "LIME_GREEN" },
+    { "substanceName": "Caffeine", "color": "SADDLE_BROWN" },
+    { "substanceName": "Alprazolam", "color": "ROYAL_BLUE" }
+  ],
+  "customSubstances": [
+    {
+      "id": 1,
+      "name": "Sertraline",
+      "units": "mg",
+      "description": "Some SSRI I guess...",
+      "roaInfos": [
+        {
+          "administrationRoute": "ORAL",
+          "doseInfo": {
+            "units": "mg",
+            "lightMin": 50.0,
+            "commonMin": 100.0,
+            "strongMin": 150.0,
+            "heavyMin": 200.0
+          },
+          "durationInfo": {
+            "onset": {},
+            "comeup": { "units": "HOURS" },
+            "peak": { "min": 4.5, "max": 8.4, "units": "HOURS" },
+            "offset": {},
+            "total": {},
+            "afterglow": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Fluoxetine",
+      "units": "mg",
+      "description": "SSRI again",
+      "roaInfos": [
+        {
+          "administrationRoute": "ORAL",
+          "doseInfo": {
+            "units": "mg",
+            "lightMin": 20.0,
+            "commonMin": 40.0,
+            "strongMin": 60.0,
+            "heavyMin": 80.0
+          },
+          "durationInfo": {}
+        }
+      ]
+    }
+  ]
+}
