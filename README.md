@@ -1,2 +1,2 @@
-# journal-export-schema
+# Journal Export Protocol
 

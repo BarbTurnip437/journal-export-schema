@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/psychonautwiki-journal-import.schema.json",
+  "title": "PsychonautWiki Journal import data",
+  "description": "Schema for the app's journal import/export JSON, derived from the JournalExport model used by the Android app.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["experiences", "substanceCompanions", "customSubstances", "customUnits"],
+  "properties": {
+    "experiences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/experience" }
+    },
+    "substanceCompanions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A substance companion record as stored by the app. Exact fields vary by entity definition; keep this permissive for compatibility.",
+        "additionalProperties": true
+      }
+    },
+    "customSubstances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A custom-substance record as stored by the app. Exact fields vary by entity definition; keep this permissive for compatibility.",
+        "additionalProperties": true
+      }
+    },
+    "customUnits": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/customUnit" }
+    }
+  },
+  "$defs": {
+    "experience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "text",
+        "creationDate",
+        "sortDate",
+        "isFavorite",
+        "ingestions",
+        "location",
+        "ratings",
+        "timedNotes"
+      ],
+      "properties": {
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 instant."
+        },
+        "sortDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 instant."
+        },
+        "isFavorite": { "type": "boolean", "default": false },
+        "ingestions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ingestion" }
+        },
+        "location": {
+          "oneOf": [
+            { "$ref": "#/$defs/location" },
+            { "type": "null" }
+          ]
+        },
+        "ratings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rating" }
+        },
+        "timedNotes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/timedNote" }
+        }
+      }
+    },
+    "ingestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substanceName",
+        "time",
+        "endTime",
+        "creationDate",
+        "administrationRoute",
+        "dose",
+        "isDoseAnEstimate",
+        "estimatedDoseStandardDeviation",
+        "units",
+        "notes",
+        "stomachFullness",
+        "consumerName",
+        "customUnitId"
+      ],
+      "properties": {
+        "substanceName": { "type": "string" },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endTime": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "administrationRoute": {
+          "type": "string",
+          "description": "Administration route enum value, e.g. ORAL, SUBLINGUAL, BUCCAL, INSUFFLATED, etc."
+        },
+        "dose": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "isDoseAnEstimate": { "type": "boolean" },
+        "estimatedDoseStandardDeviation": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "units": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "stomachFullness": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "App enum value for stomach fullness."
+        },
+        "consumerName": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "customUnitId": {
+          "oneOf": [
+            { "type": "integer" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "latitude": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "longitude": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["option", "time", "creationDate"],
+      "properties": {
+        "option": {
+          "type": "string",
+          "description": "Shulgin rating enum value serialized as a string."
+        },
+        "time": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "creationDate": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "timedNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["creationDate", "time", "note", "color", "isPartOfTimeline"],
+      "properties": {
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "note": { "type": "string" },
+        "color": {
+          "type": "string",
+          "description": "Adaptive color enum value used by the app."
+        },
+        "isPartOfTimeline": { "type": "boolean" }
+      }
+    },
+    "customUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "substanceName",
+        "name",
+        "creationDate",
+        "administrationRoute",
+        "dose",
+        "estimatedDoseStandardDeviation",
+        "isEstimate",
+        "isArchived",
+        "unit",
+        "unitPlural",
+        "originalUnit",
+        "note"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "substanceName": { "type": "string" },
+        "name": { "type": "string" },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "administrationRoute": {
+          "type": "string",
+          "description": "Administration route enum value."
+        },
+        "dose": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "estimatedDoseStandardDeviation": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "isEstimate": { "type": "boolean" },
+        "isArchived": { "type": "boolean" },
+        "unit": { "type": "string" },
+        "unitPlural": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "originalUnit": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

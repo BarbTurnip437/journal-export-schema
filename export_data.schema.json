@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "",
+  "title": "Journal Export Protocol",
+  "description": "Schema for the app's journal import/export JSON, derived from the JournalExport model used by the Android app.",
+  "$defs": {
+    "version": { "type": "string", "const": "0.1.0-indev" },
+    "adaptiveColor": {
+      "type": "string",
+      "enum": [
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "MINT",
+        "TEAL",
+        "CYAN",
+        "BLUE",
+        "INDIGO",
+        "PURPLE",
+        "PINK",
+        "BROWN",
+        "FIRE_ENGINE_RED",
+        "CORAL",
+        "TOMATO",
+        "CINNABAR",
+        "RUST",
+        "ORANGE_RED",
+        "AUBURN",
+        "SADDLE_BROWN",
+        "DARK_ORANGE",
+        "DARK_GOLD",
+        "KHAKI",
+        "BRONZE",
+        "GOLD",
+        "OLIVE",
+        "OLIVE_DRAB",
+        "DARK_OLIVE_GREEN",
+        "MOSS_GREEN",
+        "LIME_GREEN",
+        "LIME",
+        "FOREST_GREEN",
+        "SEA_GREEN",
+        "JUNGLE_GREEN",
+        "LIGHT_SEA_GREEN",
+        "DARK_TURQUOISE",
+        "DODGER_BLUE",
+        "ROYAL_BLUE",
+        "DEEP_LAVENDER",
+        "BLUE_VIOLET",
+        "DARK_VIOLET",
+        "HELIOTROPE",
+        "BYZANTIUM",
+        "MAGENTA",
+        "DARK_MAGENTA",
+        "FUCHSIA",
+        "DEEP_PINK",
+        "GRAYISH_MAGENTA",
+        "HOT_PINK",
+        "JAZZBERRY_JAM",
+        "MAROON"
+      ]
+    },
+    "experience": {
+      "type": "object",
+      "required": [
+        "title",
+        "text",
+        "creationDate",
+        "sortDate",
+        "isFavorite",
+        "ingestions",
+        "location",
+        "ratings",
+        "timedNotes"
+      ],
+      "properties": {
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 instant."
+        },
+        "sortDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 instant."
+        },
+        "isFavorite": { "type": "boolean", "default": false },
+        "ingestions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ingestion" }
+        },
+        "location": {
+          "oneOf": [{ "$ref": "#/$defs/location" }, { "type": "null" }]
+        },
+        "ratings": { "type": "array", "items": { "$ref": "#/$defs/rating" } },
+        "timedNotes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/timedNote" }
+        }
+      }
+    },
+    "ingestion": {
+      "type": "object",
+      "required": [
+        "substanceName",
+        "time",
+        "endTime",
+        "creationDate",
+        "administrationRoute",
+        "dose",
+        "isDoseAnEstimate",
+        "estimatedDoseStandardDeviation",
+        "units",
+        "notes",
+        "stomachFullness",
+        "consumerName",
+        "customUnitId"
+      ],
+      "properties": {
+        "substanceName": { "type": "string" },
+        "time": { "type": "string", "format": "date-time" },
+        "endTime": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "creationDate": { "type": "string", "format": "date-time" },
+        "administrationRoute": {
+          "type": "string",
+          "description": "Administration route enum value, e.g. ORAL, SUBLINGUAL, BUCCAL, INSUFFLATED, etc."
+        },
+        "dose": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
+        "isDoseAnEstimate": { "type": "boolean" },
+        "estimatedDoseStandardDeviation": {
+          "oneOf": [{ "type": "number" }, { "type": "null" }]
+        },
+        "units": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+        "notes": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+        "stomachFullness": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }],
+          "description": "App enum value for stomach fullness."
+        },
+        "consumerName": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+        "customUnitId": { "oneOf": [{ "type": "integer" }, { "type": "null" }] }
+      }
+    },
+    "location": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "latitude": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
+        "longitude": { "oneOf": [{ "type": "number" }, { "type": "null" }] }
+      }
+    },
+    "rating": {
+      "type": "object",
+      "required": ["option", "time", "creationDate"],
+      "properties": {
+        "option": {
+          "type": "string",
+          "description": "Shulgin rating enum value serialized as a string."
+        },
+        "time": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "creationDate": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "timedNote": {
+      "type": "object",
+      "required": ["creationDate", "time", "note", "color", "isPartOfTimeline"],
+      "properties": {
+        "creationDate": { "type": "string", "format": "date-time" },
+        "time": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" },
+        "color": { "$ref": "#/$defs/adaptiveColor" },
+        "isPartOfTimeline": { "type": "boolean" }
+      }
+    },
+    "customUnit": {
+      "type": "object",
+      "required": [
+        "id",
+        "substanceName",
+        "name",
+        "creationDate",
+        "administrationRoute",
+        "dose",
+        "estimatedDoseStandardDeviation",
+        "isEstimate",
+        "isArchived",
+        "unit",
+        "unitPlural",
+        "originalUnit",
+        "note"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "substanceName": { "type": "string" },
+        "name": { "type": "string" },
+        "creationDate": { "type": "string", "format": "date-time" },
+        "administrationRoute": {
+          "type": "string",
+          "description": "Administration route enum value."
+        },
+        "dose": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
+        "estimatedDoseStandardDeviation": {
+          "oneOf": [{ "type": "number" }, { "type": "null" }]
+        },
+        "isEstimate": { "type": "boolean" },
+        "isArchived": { "type": "boolean" },
+        "unit": { "type": "string" },
+        "unitPlural": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+        "originalUnit": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    }
+  },
+  "type": "object",
+  "required": [
+    "experiences",
+    "substanceCompanions",
+    "customSubstances",
+    "customUnits"
+  ],
+  "properties": {
+    "implementation": {
+      "description": "This key is extra added to store the meta implementation data",
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "description": "A semantic version that indicates the protocol version that the implementation used",
+          "$ref": "#/$defs/version"
+        }
+      }
+    },
+    "substanceCompanions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["substanceName"],
+        "properties": {
+          "color": { "$ref": "#/$defs/adaptiveColor" },
+          "substanceName": { "type": "string" }
+        }
+      }
+    },
+    "customSubstances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "units"],
+        "properties": {
+          "name": { "type": "string" },
+          "units": {
+            "description": "'μg', 'mg', 'g' and 'mL' is preferred but can be any",
+            "type": "string"
+          },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "experiences": { "type": "array", "items": {} },
+    "customUnits": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/customUnit" }
+    }
+  }
+}
